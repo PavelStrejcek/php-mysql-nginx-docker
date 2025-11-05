@@ -11,13 +11,19 @@ RUN set -eux; \
         libzip-dev \
         zlib-dev \
         curl \
-        git; \
+        git \
+        nodejs \
+        npm \
+        python3 \
+        make \
+        g++; \
     docker-php-ext-install -j"$(nproc)" \
         pdo_mysql \
         opcache \
         intl \
         mbstring \
-        zip
+        zip \
+        pcntl
 
 # Enable recommended opcache settings
 RUN set -eux; \
