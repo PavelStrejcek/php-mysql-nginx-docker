@@ -1,8 +1,8 @@
-# PHP 8.4 FPM + Nginx (latest) + MySQL 8.4 — Docker Compose starter
+# PHP 8.4 FPM + Apache HTTPD 2.4 (mpm_event) + MySQL 8.4 — Docker Compose starter
 
 This repository provides a ready-to-run Docker environment for a PHP web application using:
 - PHP 8.4 FPM (Alpine)
-- Nginx (stable-alpine)
+- Apache HTTP Server 2.4 (httpd:alpine, mpm_event)
 - MySQL 8.4
 
 It is framework-agnostic and points the web root to `src/public` by default.
@@ -36,8 +36,8 @@ You should see a simple PHP page, and (once MySQL is ready) database connectivit
 ├─ docker/
 │  ├─ php/
 │  │  └─ Dockerfile
-│  └─ nginx/
-│     └─ default.conf
+│  └─ apache/
+│     └─ httpd.conf
 └─ src/
    └─ public/
       └─ index.php
@@ -61,10 +61,11 @@ docker compose exec php composer --version
 # docker compose exec php composer install
 ```
 
-### Nginx
-- Image: `nginx:stable-alpine`
-- Serves `src/public` and forwards `*.php` to `php:9000` (FPM).
-- Default vhost config at `docker/nginx/default.conf`.
+### Apache HTTPD 2.4
+- Image: `httpd:2.4-alpine`
+- Runs with the event MPM and serves `src/public`.
+- Forwards `*.php` to the `php` service (PHP-FPM) via `proxy_fcgi` on `php:9000`.
+- Main config mounted at `docker/apache/httpd.conf` (allows `.htaccess` via `AllowOverride All`).
 
 ### MySQL 8.4
 - Image: `mysql:8.4`
@@ -90,10 +91,11 @@ Set them in `.env` or edit `docker-compose.yml` directly.
 
 ## Notes
 
-- The Nginx config expects your application’s public files (including `index.php`) in `src/public`.
-- For Laravel/Symfony and similar frameworks, point the document root here without modifications.
+- The Apache config expects your application's public files (including `index.php`) in `src/public`.
+- `.htaccess` is allowed by default. For central config-only setups, put your rewrites in `docker/apache/httpd.conf` and change `AllowOverride None`.
 - The MySQL container has a healthcheck; the PHP page may show DB connection errors briefly until MySQL is ready — this is normal on first startup.
 - If you need more PHP extensions, edit `docker/php/Dockerfile` and rebuild: `docker compose build php && docker compose up -d`.
+- The old Nginx config remains in the repo (`docker/nginx/default.conf`) for reference; it's no longer used by Compose.
 
 ## Tear down
 
