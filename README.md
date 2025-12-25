@@ -1,7 +1,8 @@
-# PHP 8.4 FPM + Apache HTTPD 2.4 (mpm_event) + MySQL 8.4 — Docker Compose starter
+# PHP 8.5 FPM + Apache HTTPD 2.4 (mpm_event) + MySQL 8.4 — Docker Compose starter
 
 This repository provides a ready-to-run Docker environment for a PHP web application using:
-- PHP 8.4 FPM (Alpine)
+
+- PHP 8.5 FPM (Alpine)
 - Apache HTTP Server 2.4 (httpd:alpine, mpm_event)
 - MySQL 8.4
 
@@ -9,19 +10,19 @@ It is framework-agnostic and points the web root to `src/public` by default.
 
 ## Quick start
 
-1) Copy environment file and adjust if needed:
+1. Copy environment file and adjust if needed:
 
 ```
 cp .env.example .env
 ```
 
-2) Build and start the stack:
+2. Build and start the stack:
 
 ```
 docker compose up -d --build
 ```
 
-3) Open the app in your browser:
+3. Open the app in your browser:
 
 - http://localhost:8080 (or the port you set in `APP_PORT`)
 
@@ -49,8 +50,9 @@ You should see a simple PHP page, and (once MySQL is ready) database connectivit
 ## Service details
 
 ### PHP (FPM)
+
 - Image: `php:8.4-fpm-alpine` (built locally with common extensions)
-- Extensions enabled: `pdo_mysql`, `intl`, `mbstring`, `zip`, `opcache`
+- Extensions enabled: `pdo_mysql`, `intl`, `mbstring`, `zip`
 - Composer is available inside the container (`/usr/bin/composer`).
 
 Run Composer inside the PHP container (recommended for consistent platform):
@@ -62,12 +64,14 @@ docker compose exec php composer --version
 ```
 
 ### Apache HTTPD 2.4
+
 - Image: `httpd:2.4-alpine`
 - Runs with the event MPM and serves `src/public`.
 - Forwards `*.php` to the `php` service (PHP-FPM) via `proxy_fcgi` on `php:9000`.
 - Main config mounted at `docker/apache/httpd.conf` (allows `.htaccess` via `AllowOverride All`).
 
 ### MySQL 8.4
+
 - Image: `mysql:8.4`
 - Data persisted in named volume `mysql_data`.
 - Connection from PHP: host `mysql`, port `3306`, credentials from `.env`/`docker-compose.yml`.
