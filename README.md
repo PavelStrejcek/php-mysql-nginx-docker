@@ -52,8 +52,7 @@ You should see a simple PHP page, and (once MySQL is ready) database connectivit
 ### PHP (FPM)
 
 - Image: `php:8.4-fpm-alpine` (built locally with common extensions)
-- Extensions enabled: `pdo_mysql`, `intl`, `mbstring`, `zip`
-- Composer is available inside the container (`/usr/bin/composer`).
+- Composer is available inside the container (`/usr/local/bin/composer`).
 
 Run Composer inside the PHP container (recommended for consistent platform):
 
