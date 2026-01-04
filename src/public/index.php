@@ -37,7 +37,7 @@ try {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PHP 8.4 FPM + Apache HTTPD 2.4 + MySQL 8.4</title>
+  <title>PHP 8.5 FPM + Apache HTTPD 2.4 + MySQL 8.4</title>
   <style>
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;max-width:900px;margin:2rem auto;padding:0 1rem;line-height:1.5}
     code{background:#f5f5f5;padding:.1rem .3rem;border-radius:4px}
