@@ -1,5 +1,5 @@
 <?php
-// Simple index to verify PHP-FPM, Nginx, and MySQL setup
+// Simple index to verify PHP-FPM, Nginx, and PostgreSQL setup
 
 declare(strict_types=1);
 
@@ -7,26 +7,26 @@ header('Content-Type: text/html; charset=utf-8');
 
 $phpVersion = PHP_VERSION;
 $dbInfo = [
-    'host' => 'mysql', // service name in docker-compose
-    'port' => getenv('MYSQL_PORT') ?: '3306',
-    'db'   => getenv('MYSQL_DATABASE') ?: 'app',
-    'user' => getenv('MYSQL_USER') ?: 'app',
-    'pass' => getenv('MYSQL_PASSWORD') ?: 'app',
+    'host' => 'postgres', // service name in docker-compose
+    'port' => getenv('POSTGRES_PORT') ?: '5432',
+    'db'   => getenv('POSTGRES_DB') ?: 'app',
+    'user' => getenv('POSTGRES_USER') ?: 'app',
+    'pass' => getenv('POSTGRES_PASSWORD') ?: 'app',
 ];
 
 $pdoStatus = 'not attempted';
-$mysqlVersion = null;
+$pgVersion = null;
 $error = null;
 
 try {
-    $dsn = sprintf('mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4', $dbInfo['host'], $dbInfo['port'], $dbInfo['db']);
+    $dsn = sprintf('pgsql:host=%s;port=%s;dbname=%s', $dbInfo['host'], $dbInfo['port'], $dbInfo['db']);
     $pdo = new PDO($dsn, $dbInfo['user'], $dbInfo['pass'], [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_TIMEOUT => 2,
     ]);
     $pdoStatus = 'connected';
-    $mysqlVersion = $pdo->query('SELECT VERSION() AS v')->fetch()['v'] ?? null;
+    $pgVersion = $pdo->query('SELECT VERSION()')->fetch()['version'] ?? null;
 } catch (Throwable $e) {
     $pdoStatus = 'failed';
     $error = $e->getMessage();
@@ -37,7 +37,7 @@ try {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PHP 8.4 FPM + Nginx + MySQL 8.4</title>
+  <title>PHP 8.4 FPM + Nginx + PostgreSQL 18</title>
   <style>
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;max-width:900px;margin:2rem auto;padding:0 1rem;line-height:1.5}
     code{background:#f5f5f5;padding:.1rem .3rem;border-radius:4px}
@@ -58,8 +58,8 @@ try {
   <li>User: <code><?= htmlspecialchars($dbInfo['user']) ?></code></li>
 </ul>
 <p>Status: <strong class="<?= $pdoStatus === 'connected' ? 'ok' : 'bad' ?>"><?= htmlspecialchars($pdoStatus) ?></strong></p>
-<?php if ($mysqlVersion): ?>
-  <p>MySQL version: <code><?= htmlspecialchars($mysqlVersion) ?></code></p>
+<?php if ($pgVersion): ?>
+  <p>PostgreSQL version: <code><?= htmlspecialchars($pgVersion) ?></code></p>
 <?php endif; ?>
 <?php if ($error): ?>
   <details open>

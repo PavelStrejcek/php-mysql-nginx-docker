@@ -10,10 +10,11 @@ RUN set -eux; \
         oniguruma-dev \
         libzip-dev \
         zlib-dev \
+        libpq-dev \
         curl \
         git; \
     docker-php-ext-install -j"$(nproc)" \
-        pdo_mysql \
+        pdo_pgsql \
         opcache \
         intl \
         mbstring \
